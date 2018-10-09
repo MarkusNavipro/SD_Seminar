@@ -17,8 +17,10 @@ table 50110 "CSD Seminar Reg. Header"
             begin
                 if "No." <> xRec."No." then begin
                     SeminarSetup.Get;
-                    NoSeriesMgt.TestManual(SeminarSetup."Seminar Registration Nos.");
-                    "No. Series" := '';
+                    SeminarSetup.TestField("Seminar Registration Nos.");
+                    //NoSeriesMgt.TestManual(SeminarSetup."Seminar Registration Nos.");
+                    NoSeriesMgt.InitSeries(SeminarSetup."Seminar Registration Nos.", xRec."No. Series", 0D, "No.", "No. Series");
+                    //"No. Series" := '';
                 end;
             end;
         }
