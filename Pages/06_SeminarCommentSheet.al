@@ -2,8 +2,8 @@ page 50106 "CSD Seminar Comment Sheet"
 {
     PageType = List;
     SourceTable = "CSD Seminar Comment Line";
-
     Caption = 'Seminar Comment Sheet';
+    AutoSplitKey = true;
 
     layout
     {
@@ -45,4 +45,9 @@ page 50106 "CSD Seminar Comment Sheet"
             }
         }
     }
+
+    trigger OnNewRecord(BelowxRec: Boolean);
+    begin
+        SetupNewLine;
+    end;
 }
