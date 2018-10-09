@@ -18,9 +18,8 @@ table 50110 "CSD Seminar Reg. Header"
                 if "No." <> xRec."No." then begin
                     SeminarSetup.Get;
                     SeminarSetup.TestField("Seminar Registration Nos.");
-                    //NoSeriesMgt.TestManual(SeminarSetup."Seminar Registration Nos.");
-                    NoSeriesMgt.InitSeries(SeminarSetup."Seminar Registration Nos.", xRec."No. Series", 0D, "No.", "No. Series");
-                    //"No. Series" := '';
+                    NoSeriesMgt.TestManual(SeminarSetup."Seminar Registration Nos.");
+                    "No. Series" := '';
                 end;
             end;
         }
@@ -330,6 +329,9 @@ table 50110 "CSD Seminar Reg. Header"
 
     trigger OnDelete();
     begin
+        if (CurrFieldNo > 0) then
+            TestField(Status, Status::Canceled);
+
         SeminarRegLine.RESET;
         SeminarRegLine.SETRANGE("Document No.", "No.");
         SeminarRegLine.SETRANGE(Registered, true);
@@ -337,8 +339,7 @@ table 50110 "CSD Seminar Reg. Header"
             ERROR(
               Text001,
               SeminarRegLine.TableCaption,
-              SeminarRegLine.FieldCaption(Registered),
-              true);
+              SeminarRegLine.FieldCaption(Registered), true);
         SeminarRegLine.SETRANGE(Registered);
         SeminarRegLine.deleteALL(true);
 
@@ -350,7 +351,7 @@ table 50110 "CSD Seminar Reg. Header"
         SeminarCommentLine.RESET;
         SeminarCommentLine.SETRANGE("Table Name", SeminarCommentLine."Table Name"::"Seminar Registration");
         SeminarCommentLine.SETRANGE("No.", "No.");
-        SeminarCommentLine.deleteALL;
+        SeminarCommentLine.DeleteAll;
     end;
 
     trigger OnInsert();
@@ -361,6 +362,11 @@ table 50110 "CSD Seminar Reg. Header"
             NoSeriesMgt.InitSeries(SeminarSetup."Seminar Registration Nos.", xRec."No. Series", 0D, "No.", "No. Series");
         end;
 
+        InitRecord;
+    end;
+
+    procedure InitRecord();
+    begin
         if "Posting Date" = 0D then
             "Posting Date" := WORKDATE;
         "Document Date" := WORKDATE;
